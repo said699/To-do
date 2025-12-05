@@ -6,6 +6,30 @@
     <title>Todo-list</title>
 </head>
 <body>
-    
+    {% block content %}
+        {% for cat, msg in get_flashed_messages(True) %}
+            <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+
+        <form action="/register" method="post">
+            {{ form.hidden_tag() }}
+            {% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] %}
+                {{ field.label() }}
+                {% if field.errors %}
+                    {{ field(class="invalid") }}
+                    <span class="invalid-feedback">
+                        {% for e in field.errors %}
+                        {{ e }}
+                        {% endfor %}
+                    </span>
+                {% else %}
+                    {{ field() }}
+                    <br>
+                {% endif %}
+            {% endfor %}
+
+            <p>{{ form.submit() }}</p>
+        </form>
+    {% endblock %}
 </body>
 </html>
