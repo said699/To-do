@@ -1,4 +1,5 @@
-from main import app, db
+from main import app
+from extensios import db
 
 with app.app_context():
     db.create_all()

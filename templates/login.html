@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+</head>
+<body>
+    {% block content %}
+        {% for cat, msg in get_flashed_messages(True) %}
+            <div class="flash {{cat}}">{{msg}}</div>
+        {% endfor %}
+
+        <form action="/login" method="post">
+            {{ form.hidden_tag() }}
+            {% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] %}
+                {{ field.label() }}
+                {% if field.errors %}
+                    {{ field(class="invalid") }}
+                    <span class="invalid-feedback">
+                        {% for e in field.errors %}
+                        {{ e }}
+                        {% endfor %}
+                    </span>
+                {% else %}
+                    {{ field() }}
+                    <br>
+                {% endif %}
+            {% endfor %}
+
+            <p>{{ form.submit() }}</p>
+            {{ form.remember() }}
+        </form>
+    {% endblock %}
+</body>
+</html>
