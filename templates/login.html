@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Авторизация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 <body>
     {% block content %}
@@ -29,7 +30,7 @@
             {% endfor %}
 
             <p>{{ form.submit() }}</p>
-            {{ form.remember() }}
+            <p>{{ form.remember.label() }} {{ form.remember() }}</p>
         </form>
     {% endblock %}
 </body>

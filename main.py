@@ -6,6 +6,10 @@ from models import Users, Todo
 from flask_login import login_required, current_user, LoginManager, UserMixin, login_user, logout_user
 from flask_bcrypt import Bcrypt 
 from extensios import db
+from flask_admin.contrib.sqla import ModelView
+from flask_admin import Admin
+from flask_admin.theme import Bootstrap4Theme
+from admin import AdminModelView, MyAdminIndexView
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -19,6 +23,12 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 db.init_app(app)
 bcrypt = Bcrypt(app)
+
+admin = Admin(app, index_view=MyAdminIndexView(), name='todolist-admin', theme=Bootstrap4Theme(swatch='cerulean'), url='/secret-admin-panel')
+print('Admin init')
+admin.add_view(AdminModelView(Users, db.session, name='Пользователи', endpoint='users'))
+admin.add_view(AdminModelView(Todo, db.session, name='Todo', endpoint='todo'))
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -47,6 +57,15 @@ def login():
         user = Users.query.filter_by(login=form.login.data).first()
         if user and bcrypt.check_password_hash(user.psw, form.psw.data):
             login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+
+            if user.is_admin:
+                return redirect(url_for('admin.index'))
+            
+            elif user.is_admin and next_page:
+                return redirect(next_page)
+
+            
             return redirect(request.args.get('next') or url_for('profile'))
         flash('Неверный логин или пароль!', 'error')
     
@@ -65,7 +84,6 @@ def register():
             db.session.flush()
             db.session.commit()
             flash('Вы успешно зарегестрировались!', 'success')
-            print(user.psw)
             return redirect(url_for('login'))
 
         except Exception as e:
@@ -81,4 +99,6 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

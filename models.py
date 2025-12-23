@@ -13,3 +13,4 @@ class Users(db.Model, UserMixin):
     psw = db.Column(db.String(300), nullable=False)
     login = db.Column(db.String(100), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
