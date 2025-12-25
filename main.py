@@ -1,6 +1,5 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
-import os, datetime
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, flash, redirect, url_for, request, session
+import os
 from forms import RegisterForm, LoginForm
 from models import Users, Todo
 from flask_login import login_required, current_user, LoginManager, UserMixin, login_user, logout_user
@@ -10,6 +9,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin
 from flask_admin.theme import Bootstrap4Theme
 from admin import AdminModelView, MyAdminIndexView
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -23,6 +23,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 db.init_app(app)
 bcrypt = Bcrypt(app)
+migrate = Migrate(app, db)
+
 
 admin = Admin(app, index_view=MyAdminIndexView(), name='todolist-admin', theme=Bootstrap4Theme(swatch='cerulean'), url='/secret-admin-panel')
 print('Admin init')
@@ -44,7 +46,6 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    
     return render_template('profile.html')
 
 @app.route('/login', methods=['POST', 'GET'])
