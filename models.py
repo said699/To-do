@@ -1,17 +1,24 @@
+# Импорты
 from extensios import db
 import datetime as dt
 from flask_login import UserMixin
 
-class Todo(db.Model, UserMixin):
+# Таблица с задачами
+class Todo(db.Model):
+    __tablename__ = 'todo'
+
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(300), nullable=False)
     date_for_doing = db.Column(db.DateTime, nullable=False)
-    date_of_added = db.Column(db.DateTime, default=dt.datetime.now(dt.UTC))
+    date_of_added = db.Column(db.DateTime, default=dt.datetime.utcnow())
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('Users', back_populates='tasks')
 
+# Таблица с пользователями
 class Users(db.Model, UserMixin):
+    __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)
     psw = db.Column(db.String(300), nullable=False)
     login = db.Column(db.String(100), unique=True, nullable=False)

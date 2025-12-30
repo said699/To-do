@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 </head>
 <body>
     <header>
         <h2><a href="{{ url_for('logout') }}">Выйти</a></h2>
+        <h1><a href="{{ url_for('add_task') }}">Добавить задачу</a></h1>
     </header>
     <h3>{{ current_user.name }} вот ваш список дел</h3>
+    {% for task in tasks %}
+        <div>
+            <p>{{ task.text }}</p>
+            <small>
+                Нужно (с)делать (в)до: {{ task.date_for_doing.strftime('%d.%m.%Y') }}
+            </small>
+        </div>
+    {% endfor %}
 </body>
 </html>

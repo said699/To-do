@@ -1,0 +1,77 @@
+/* Сброс */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Общий фон */
+body {
+    background-color: #181a1b;
+    color: #e6e6e6;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 60px 24px;
+    font-size: 16px;
+}
+
+/* Шапка */
+header {
+    max-width: 900px;
+    margin: 0 auto 50px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Ссылки */
+a {
+    color: #748ffc;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Заголовки */
+h1 {
+    font-size: 22px;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+h3 {
+    max-width: 900px;
+    margin: 0 auto 40px auto;
+    font-size: 18px;
+    font-weight: 500;
+    color: #cfcfcf;
+}
+
+/* Карточки задач */
+div {
+    max-width: 900px;
+    margin: 0 auto 20px auto;
+    padding: 22px 24px;
+    background-color: #222425;
+    border-radius: 10px;
+    border: 1px solid #2f3133;
+}
+
+/* Текст задачи */
+div p {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #f1f1f1;
+    line-height: 1.4;
+}
+
+/* Дата */
+div small {
+    font-size: 14px;
+    color: #a5a8ab;
+}
