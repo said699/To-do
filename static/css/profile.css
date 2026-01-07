@@ -75,3 +75,15 @@ div small {
     font-size: 14px;
     color: #a5a8ab;
 }
+.delete_all{
+    width: 180px;
+    height: 30px;
+    border-radius: 10px;
+    
+    border: none;
+    color: #f1f1f1;
+    background-color: red;
+}
+.no_tasks{
+    text-align: center;
+}

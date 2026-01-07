@@ -1,8 +1,10 @@
 # Импорты
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField
-from wtforms.validators import ValidationError, DataRequired, Length, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateTimeLocalField, TextAreaField
+from wtforms.validators import ValidationError, InputRequired, DataRequired, Length, EqualTo
 from models import Users
+from datetime import datetime as dt
+from datetime import timezone as tz
 
 # Форма для страницы регистрации
 class RegisterForm(FlaskForm):
@@ -29,5 +31,18 @@ class LoginForm(FlaskForm):
 # Форма для страницы добавления задач
 class AddTaskForm(FlaskForm):
     text = StringField('Текст задачи: ', validators=[DataRequired(), Length(min=3, max=300, message='Текст задачи должен быть больше 3 и меньше 300 символов')])
-    date_for_doing = DateField('Время или срок выполнееия: ', validators=[DataRequired()])
+    date_for_doing = DateTimeLocalField('Дата или срок выполнееия: ', format='%Y-%m-%dT%H:%M', validators=[InputRequired()])
+    additional_information = TextAreaField('Дополнительная информация', validators=[DataRequired(), Length(min=3, max=1000, message='Дополнительная информация о задаче должна быть больше 3 и меньше 1000 символов')])
     submit = SubmitField('Добавить задачу')
+
+    def validate_date_for_doing(self, field):
+        user_local_dt = field.data
+        user_utc_dt = user_local_dt.replace(tzinfo=tz.utc)
+        now_utc = dt.now(tz.utc)
+
+        if user_utc_dt < now_utc:
+            raise ValidationError('Пожалуйста, выберите дату и время в будущем')
+
+
+class DeleteAllTasksForm(FlaskForm):
+    submit = SubmitField('Удалить все задачи')

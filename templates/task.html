@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/task.css') }}">
+</head>
+<body>
+    <div class="task-container">
+       <h2>Текст задачи: <span>{{ task.text }}</span></h2>
+        <h3>Время или дейдлайн выполнения: <span>{{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}</span></h3>
+        <h4>Дополнительная информация: <span>{{ task.additional_information }}</span></h4>
+        <div class="task-id">ID задачи: {{ task.id }}</div> 
+    </div>
+    
+</body>
+</html>

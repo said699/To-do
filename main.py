@@ -1,7 +1,7 @@
 # Импорты
 from flask import Flask, render_template, flash, redirect, url_for, request, session, current_app
 import os, datetime
-from forms import RegisterForm, LoginForm, AddTaskForm
+from forms import RegisterForm, LoginForm, AddTaskForm, DeleteAllTasksForm
 from models import Users, Todo
 from flask_login import login_required, current_user, LoginManager, UserMixin, login_user, logout_user
 from flask_bcrypt import Bcrypt 
@@ -21,6 +21,7 @@ app.config['MAX_CONTENT_LENGTH'] = 5*1024*1024
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_INFO')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_ENABLED'] = True
 
 # Создание авторизации
 login_manager = LoginManager(app)
@@ -52,11 +53,18 @@ def logout():
     return redirect(url_for('login'))
 
 # Страница профиля
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    delete_form = DeleteAllTasksForm()
+
+    if delete_form.validate_on_submit():
+        Todo.query.filter_by(user_id=current_user.id).delete()
+        db.session.commit()
+        flash('Все задачи удалены!', 'success')
+
     tasks = Todo.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', tasks=tasks)
+    return render_template('profile.html', tasks=tasks, form=delete_form)
 
 # Страница добавления задач
 @app.route('/add_task', methods=['GET', 'POST'])
@@ -65,11 +73,16 @@ def add_task():
     form = AddTaskForm()
     if form.validate_on_submit():
         try:
-            task = Todo(text = form.text.data, date_for_doing = form.date_for_doing.data, date_of_added=datetime.datetime.utcnow(), user_id=current_user.id, user=current_user)
+            task = Todo(
+                text=form.text.data,
+                date_for_doing=form.date_for_doing.data,
+                additional_information=form.additional_information.data,
+                user=current_user
+            )
             db.session.add(task)
             db.session.commit()
             flash('Задача добавлена успешно!', 'success')
-            return redirect(url_for('profile    '))
+            return redirect(url_for('profile'))
 
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -89,14 +102,9 @@ def login():
         user = Users.query.filter_by(login=form.login.data).first()
         if user and bcrypt.check_password_hash(user.psw, form.psw.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
 
             if user.is_admin:
-                return redirect(url_for('admin.index'))
-            
-            elif user.is_admin and next_page:
-                return redirect(next_page)
-
+                return redirect(request.args.get('next') or url_for('admin.index'))
             
             return redirect(request.args.get('next') or url_for('profile'))
         flash('Неверный логин или пароль!', 'error')
@@ -125,6 +133,12 @@ def register():
             print('Ошибка при добавлении в БД ', str(e))
 
     return render_template('register.html', form=form)
+
+@app.route('/profile/<int:id>')
+@login_required
+def task(id):
+    task = Todo.query.get_or_404(id)
+    return render_template('task.html', task=task)
 
 # Страница 404
 @app.errorhandler(404)

@@ -1,0 +1,48 @@
+/* Базовые настройки страницы */
+body {
+    background-color: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #444;
+    margin: 0;
+    padding: 40px 20px;
+    line-height: 1.6;
+}
+
+/* Общий контейнер без границ и теней */
+.task-container {
+    max-width: 10000px;
+    margin: 0 auto;
+}
+
+/* Заголовок задачи — самый крупный элемент */
+h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 24px;
+}
+
+/* Подзаголовки (Дата и Инфо) */
+h3, h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+/* Стилизация текста внутри тегов span */
+span {
+    font-weight: 400;
+    color: #333;
+    margin-left: 8px;
+}
+
+/* ID задачи — неброский текст внизу */
+.task-id {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eee; /* Тонкая разделительная линия */
+    font-size: 0.8rem;
+    color: #999;
+    letter-spacing: 0.5px;
+}

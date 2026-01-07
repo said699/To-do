@@ -10,15 +10,24 @@
     <header>
         <h2><a href="{{ url_for('logout') }}">Выйти</a></h2>
         <h1><a href="{{ url_for('add_task') }}">Добавить задачу</a></h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="delete_all"
+                onclick="return confirm('Вы уверены? Все задачи будут удалены!')">
+                Удалить все задачи
+            </button>
+        </form>
     </header>
-    <h3>{{ current_user.name }} вот ваш список дел</h3>
+    <h3>{{ current_user.name }} вот ваш список дел:</h3>
     {% for task in tasks %}
         <div>
-            <p>{{ task.text }}</p>
+            <a href="{{ url_for('task', id=task.id) }}"><p>{{ task.text }}</p></a>
             <small>
-                Нужно (с)делать (в)до: {{ task.date_for_doing.strftime('%d.%m.%Y') }}
+                {{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}
             </small>
         </div>
+    {% else %}
+        <p class="no_tasks">Задач пока нет</p>
     {% endfor %}
 </body>
 </html>

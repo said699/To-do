@@ -10,7 +10,8 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(300), nullable=False)
     date_for_doing = db.Column(db.DateTime, nullable=False)
-    date_of_added = db.Column(db.DateTime, default=dt.datetime.utcnow())
+    date_of_added = db.Column(db.DateTime, default=dt.datetime.utcnow)
+    additional_information = db.Column(db.String(300), nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('Users', back_populates='tasks')

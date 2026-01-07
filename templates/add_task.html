@@ -8,30 +8,36 @@
 </head>
 <body>
     {% block content %}
-        {% for cat, msg in get_flashed_messages(True) %}
-            <div class="flash {{cat}}">{{msg}}</div>
-        {% endfor %}
+    {% for cat, msg in get_flashed_messages(True) %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
 
-        <form action="/add_task" method="post">
-            {{ form.hidden_tag() }}
-            {% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] %}
+    <form action="/add_task" method="post">
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] %}
+            <div class="form-group">
                 {{ field.label() }}
-                {% if field.errors %}
-                    {{ field(class="invalid") }}
-                    <span class="invalid-feedback">
-                        {% for e in field.errors %}
-                        {{ e }}
-                        {% endfor %}
-                    </span>
+
+                {% if field.name == 'date_for_doing' %}
+                    {{ field(type="datetime-local") }}
                 {% else %}
                     {{ field() }}
-                    <br>
                 {% endif %}
-            {% endfor %}
 
-            <p>{{ form.submit() }}</p>
-            
-        </form>
+                {% if field.errors %}
+                    <span class="invalid-feedback">
+                        {% for e in field.errors %}
+                            {{ e }}
+                        {% endfor %}
+                    </span>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <p>{{ form.submit() }}</p>
+    </form>
     {% endblock %}
+
 </body>
 </html>
