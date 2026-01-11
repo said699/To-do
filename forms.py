@@ -1,6 +1,6 @@
 # Импорты
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateTimeLocalField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateTimeLocalField, TextAreaField, HiddenField
 from wtforms.validators import ValidationError, InputRequired, DataRequired, Length, EqualTo
 from models import Users
 from datetime import datetime as dt
@@ -46,3 +46,8 @@ class AddTaskForm(FlaskForm):
 
 class DeleteAllTasksForm(FlaskForm):
     submit = SubmitField('Удалить все задачи')
+
+class TasksState(FlaskForm):
+    task_id = HiddenField()
+    complete_task = SubmitField('✔ Выполнена!')
+    delete_task = SubmitField('🗑 Удалить')

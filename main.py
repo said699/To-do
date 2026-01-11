@@ -1,12 +1,11 @@
 # Импорты
 from flask import Flask, render_template, flash, redirect, url_for, request, session, current_app
 import os, datetime
-from forms import RegisterForm, LoginForm, AddTaskForm, DeleteAllTasksForm
+from forms import RegisterForm, LoginForm, AddTaskForm, DeleteAllTasksForm, TasksState
 from models import Users, Todo
 from flask_login import login_required, current_user, LoginManager, UserMixin, login_user, logout_user
 from flask_bcrypt import Bcrypt 
 from extensios import db
-from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin
 from flask_admin.theme import Bootstrap4Theme
 from admin import AdminModelView, TodoAdminIndexView
@@ -57,14 +56,27 @@ def logout():
 @login_required
 def profile():
     delete_form = DeleteAllTasksForm()
+    form = TasksState()
 
     if delete_form.validate_on_submit():
         Todo.query.filter_by(user_id=current_user.id).delete()
         db.session.commit()
         flash('Все задачи удалены!', 'success')
 
+    elif form.validate_on_submit():
+        task = Todo.query.get(form.task_id.data)
+        if form.delete_task.data:
+            db.session.delete(task)
+            flash('Задача удалена!', 'success')
+
+        elif form.complete_task.data:
+            db.session.delete(task)
+            flash('Поздравляем с выполнением задачи!', 'success')
+        db.session.commit()
+        return redirect(url_for('profile'))
+
     tasks = Todo.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', tasks=tasks, form=delete_form)
+    return render_template('profile.html', tasks=tasks, delete_form=delete_form, form=form)
 
 # Страница добавления задач
 @app.route('/add_task', methods=['GET', 'POST'])

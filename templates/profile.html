@@ -11,7 +11,7 @@
         <h2><a href="{{ url_for('logout') }}">Выйти</a></h2>
         <h1><a href="{{ url_for('add_task') }}">Добавить задачу</a></h1>
         <form method="POST">
-            {{ form.hidden_tag() }}
+            {{ delete_form.hidden_tag() }}
             <button type="submit" class="delete_all"
                 onclick="return confirm('Вы уверены? Все задачи будут удалены!')">
                 Удалить все задачи
@@ -25,6 +25,14 @@
             <small>
                 {{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}
             </small>
+
+            <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.task_id(value=task.id) }}
+
+                {{ form.complete_task() }}
+                {{ form.delete_task() }}
+            </form>
         </div>
     {% else %}
         <p class="no_tasks">Задач пока нет</p>
