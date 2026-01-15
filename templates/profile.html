@@ -10,6 +10,7 @@
     <header>
         <h2><a href="{{ url_for('logout') }}">Выйти</a></h2>
         <h1><a href="{{ url_for('add_task') }}">Добавить задачу</a></h1>
+        <h3><a href="{{ url_for('archiv') }}">Архив</a></h3>
         <form method="POST">
             {{ delete_form.hidden_tag() }}
             <button type="submit" class="delete_all"
@@ -20,20 +21,22 @@
     </header>
     <h3>{{ current_user.name }} вот ваш список дел:</h3>
     {% for task in tasks %}
-        <div>
-            <a href="{{ url_for('task', id=task.id) }}"><p>{{ task.text }}</p></a>
-            <small>
-                {{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}
-            </small>
+        {% if not task.is_completed %}
+            <div>
+                <a href="{{ url_for('task', id=task.id) }}"><p>{{ task.text }}</p></a>
+                <small>
+                    {{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}
+                </small>
 
-            <form method="post">
-                {{ form.hidden_tag() }}
-                {{ form.task_id(value=task.id) }}
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.task_id(value=task.id) }}
 
-                {{ form.complete_task() }}
-                {{ form.delete_task() }}
-            </form>
-        </div>
+                    {{ form.complete_task() }}
+                    {{ form.delete_task() }}
+                </form>
+            </div>
+        {% endif %}
     {% else %}
         <p class="no_tasks">Задач пока нет</p>
     {% endfor %}

@@ -65,13 +65,18 @@ def profile():
 
     elif form.validate_on_submit():
         task = Todo.query.get(form.task_id.data)
+
         if form.delete_task.data:
             db.session.delete(task)
+            db.session.commit()
             flash('Задача удалена!', 'success')
 
         elif form.complete_task.data:
-            db.session.delete(task)
+            task.is_completed = True
+            db.session.commit()
             flash('Поздравляем с выполнением задачи!', 'success')
+            
+
         db.session.commit()
         return redirect(url_for('profile'))
 
@@ -137,6 +142,7 @@ def register():
             db.session.flush()
             db.session.commit()
             flash('Вы успешно зарегестрировались!', 'success')
+
             return redirect(url_for('login'))
 
         except Exception as e:
@@ -151,6 +157,12 @@ def register():
 def task(id):
     task = Todo.query.get_or_404(id)
     return render_template('task.html', task=task)
+
+@app.route('/completed_tasks')
+@login_required
+def archiv():
+    tasks = Todo.query.filter_by(is_completed=True).all()
+    return render_template('archiv.html', tasks=tasks)
 
 # Страница 404
 @app.errorhandler(404)

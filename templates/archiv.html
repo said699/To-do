@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выполненные задачи</title>
+</head>
+<body>
+    {% for task in tasks %}
+        <div>
+            <a href="{{ url_for('task', id=task.id) }}"><p>{{ task.text }}</p></a>
+            <small>
+                {{ task.date_for_doing.strftime('%d:%m:%Y %H:%M') }}
+            </small>
+
+            <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.task_id(value=task.id) }}
+
+                {{ form.complete_task() }}
+                {{ form.delete_task() }}
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>
